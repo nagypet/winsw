@@ -81,6 +81,8 @@ namespace WinSW
     {
         protected string BaseLogFileName { get; private set; }
 
+        protected string LogDirectory { get; private set; }
+
         protected string OutFilePattern { get; private set; }
 
         protected string ErrFilePattern { get; private set; }
@@ -88,6 +90,7 @@ namespace WinSW
         protected AbstractFileLogAppender(string logDirectory, string baseName, bool outFileDisabled, bool errFileDisabled, string outFilePattern, string errFilePattern)
             : base(outFileDisabled, errFileDisabled)
         {
+            this.LogDirectory = logDirectory;
             this.BaseLogFileName = Path.Combine(logDirectory, baseName);
             this.OutFilePattern = outFilePattern;
             this.ErrFilePattern = errFilePattern;
@@ -171,15 +174,20 @@ namespace WinSW
 
     public class TimeBasedRollingLogAppender : AbstractFileLogAppender
     {
+        public static int DefaultFilesToKeep = 60;
+
         public string Pattern { get; private set; }
 
         public int Period { get; private set; }
 
-        public TimeBasedRollingLogAppender(string logDirectory, string baseName, bool outFileDisabled, bool errFileDisabled, string outFilePattern, string errFilePattern, string pattern, int period)
+        public int FilesToKeep { get; private set; }
+
+        public TimeBasedRollingLogAppender(string logDirectory, string baseName, bool outFileDisabled, bool errFileDisabled, string outFilePattern, string errFilePattern, string pattern, int period, int filesToKeep)
             : base(logDirectory, baseName, outFileDisabled, errFileDisabled, outFilePattern, errFilePattern)
         {
             this.Pattern = pattern;
             this.Period = period;
+            this.FilesToKeep = filesToKeep;
         }
 
         protected override void LogOutput(StreamReader outputReader)
@@ -193,7 +201,8 @@ namespace WinSW
         }
 
         /// <summary>
-        /// Works like the CopyStream method but does a log rotation based on time.
+        /// Works like the CopyStream method but does a log rotation based on time. Deletes old log files, pls refer to this.FilesToKeep (Default is 60).
+        /// ext ~= ".out.log" or ".err.log"
         /// </summary>
         private void CopyStreamWithDateRotation(StreamReader reader, string ext)
         {
@@ -208,6 +217,32 @@ namespace WinSW
                 {
                     writer.Dispose();
                     copy.Writer = writer = new FileStream(this.BaseLogFileName + "_" + periodicRollingCalendar.Format + ext, FileMode.Create);
+
+                    try
+                    {
+                        // Get the list of files
+                        string[] fileArray = Directory.GetFiles(this.LogDirectory, "*" + ext, SearchOption.TopDirectoryOnly);
+
+                        // Sort the list by file name
+                        Array.Sort(fileArray, string.Compare);
+
+                        // Remove oldest files
+                        if (fileArray.Length > this.FilesToKeep)
+                        {
+                            for (int j = 0; j < (fileArray.Length - this.FilesToKeep); j++)
+                            {
+                                string dst = fileArray[j];
+                                if (File.Exists(dst))
+                                {
+                                    File.Delete(dst);
+                                }
+                            }
+                        }
+                    }
+                    catch (IOException e)
+                    {
+                        this.EventLogger.LogEvent("Failed to delete log: " + e.Message);
+                    }
                 }
             }
 

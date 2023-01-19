@@ -344,7 +344,9 @@ namespace WinSW.Configuration
 
             public override int? SizeThreshold => this.raw.SizeThreshold ?? this.defaults.SizeThreshold;
 
-            public override int? KeepFiles => this.raw.KeepFiles ?? this.defaults.KeepFiles;
+            public override int? KeepFilesSizeBased => this.raw.KeepFiles ?? this.defaults.KeepFilesSizeBased;
+
+            public override int? KeepFilesTimeBased => this.raw.KeepFiles ?? this.defaults.KeepFilesTimeBased;
 
             public override string Pattern => Expand(this.raw.Pattern) ?? this.defaults.Pattern;
 

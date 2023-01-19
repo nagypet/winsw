@@ -13,7 +13,9 @@ namespace WinSW.Configuration
 
         public abstract int? SizeThreshold { get; }
 
-        public abstract int? KeepFiles { get; }
+        public abstract int? KeepFilesSizeBased { get; }
+
+        public abstract int? KeepFilesTimeBased { get; }
 
         public abstract string Pattern { get; }
 
@@ -52,7 +54,16 @@ namespace WinSW.Configuration
                     return new RollingLogAppender(this.Directory, this.Name, this.OutFileDisabled, this.ErrFileDisabled, this.OutFilePattern, this.ErrFilePattern);
 
                 case "roll-by-time":
-                    return new TimeBasedRollingLogAppender(this.Directory, this.Name, this.OutFileDisabled, this.ErrFileDisabled, this.OutFilePattern, this.ErrFilePattern, this.Pattern, this.Period.GetValueOrDefault(1));
+                    return new TimeBasedRollingLogAppender(
+                        this.Directory,
+                        this.Name,
+                        this.OutFileDisabled,
+                        this.ErrFileDisabled,
+                        this.OutFilePattern,
+                        this.ErrFilePattern,
+                        this.Pattern,
+                        this.Period.GetValueOrDefault(1),
+                        this.KeepFilesSizeBased.GetValueOrDefault(TimeBasedRollingLogAppender.DefaultFilesToKeep));
 
                 case "roll-by-size":
                     return new SizeBasedRollingLogAppender(
@@ -63,7 +74,7 @@ namespace WinSW.Configuration
                         this.OutFilePattern,
                         this.ErrFilePattern,
                         this.SizeThreshold.GetValueOrDefault(10 * 1024) * SizeBasedRollingLogAppender.BytesPerKB,
-                        this.KeepFiles.GetValueOrDefault(SizeBasedRollingLogAppender.DefaultFilesToKeep));
+                        this.KeepFilesSizeBased.GetValueOrDefault(SizeBasedRollingLogAppender.DefaultFilesToKeep));
 
                 case "append":
                     return new DefaultLogAppender(this.Directory, this.Name, this.OutFileDisabled, this.ErrFileDisabled, this.OutFilePattern, this.ErrFilePattern);

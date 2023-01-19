@@ -101,7 +101,9 @@ namespace WinSW.Configuration
 
             public override int? SizeThreshold => 1024 * 10 * RollingSizeTimeLogAppender.BytesPerKB;
 
-            public override int? KeepFiles => SizeBasedRollingLogAppender.DefaultFilesToKeep;
+            public override int? KeepFilesSizeBased => SizeBasedRollingLogAppender.DefaultFilesToKeep;
+
+            public override int? KeepFilesTimeBased => TimeBasedRollingLogAppender.DefaultFilesToKeep;
 
             public override string Pattern =>
                 throw new InvalidDataException("Time Based rolling policy is specified but no pattern can be found in configuration XML.");
