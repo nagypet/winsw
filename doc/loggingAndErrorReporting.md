@@ -52,11 +52,14 @@ This configuration must accompany a nested `<pattern>` element, which specifies 
 ```xml
 <log mode="roll-by-time">
   <pattern>yyyyMMdd</pattern>
+  <keepFiles>30</keepFiles>
 </log>
 ```
 
 The syntax of the pattern string is specified by [DateTime.ToString(String)](https://docs.microsoft.com/dotnet/api/system.datetime.tostring#System_DateTime_ToString_System_String_). 
 For example, in the above example, the log of Jan 1, 2013 gets written to `myapp.20130101.out.log` and `myapp.20130101.err.log`. 
+
+New! You may specify the `keepFiles` parameter which defaults to 60.
 
 ## Roll by size and time mode
 

@@ -6,6 +6,8 @@
 [![Gitter](https://img.shields.io/gitter/room/winsw/winsw?style=flat-square)](https://gitter.im/winsw/winsw?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
 [![License](https://img.shields.io/github/license/winsw/winsw?style=flat-square)](LICENSE.txt)
 
+This is a fork of the [winsw](https://github.com/winsw/winsw) repository with one single improvement. In the roll-by-time logger there is a new parameter for restricting the count of log files kept. Please see [Logging and error reporting](doc/loggingAndErrorReporting.md).
+
 WinSW is an executable binary, which can be used to wrap and manage a custom process as a Windows service.
 Once you download the installation package, you can rename *WinSW.exe* to any name, e.g. *MyService.exe*.
 
