@@ -25,7 +25,7 @@ More executables can be added upon request.
 
 ## Download
 
-WinSW binaries are available on [GitHub Releases](https://github.com/winsw/winsw/releases) and [NuGet](https://www.nuget.org/packages/WinSW/).
+WinSW binaries are available on [GitHub Releases](https://github.com/nagypet/winsw/releases).
 
 Alternative sources:
 
